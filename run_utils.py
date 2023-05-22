@@ -9,6 +9,13 @@ from inference import Converter, YoloV5
 from soccer import Ball, Match
 
 
+
+def get_offside_line(
+        
+): 
+    # TODO: create the offside line based on the last player from the defending team
+    return 0
+
 def get_ball_detections(
     ball_detector: YoloV5, frame: np.ndarray
 ) -> List[norfair.Detection]:

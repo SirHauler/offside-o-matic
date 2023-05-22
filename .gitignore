@@ -5,6 +5,14 @@ __pycache__/
 
 cenital/
 
+
+# Datasets
+datasets/
+
+# Runs
+
+runs/
+
 # Media
 *.mp4
 *.png

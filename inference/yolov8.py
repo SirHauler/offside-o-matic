@@ -14,8 +14,7 @@ class YoloV8(BaseDetector):
     ): 
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print(self.device)
-
-        self.model = YOLO("yolov8n.pt")
+        self.model = YOLO("yolov8n.pt")  # TODO: update this to the trained model!
 
 
     def predict(self, input_image: List[np.ndarray]) -> pd.DataFrame:
@@ -23,7 +22,6 @@ class YoloV8(BaseDetector):
         result = self.model(input_image, size=640)
         
         return result.pandas().xyxy[0]
-
     
 
     

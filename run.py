@@ -7,7 +7,7 @@ from norfair import Tracker, Video
 from norfair.camera_motion import MotionEstimator
 from norfair.distances import mean_euclidean
 
-from inference import Converter, HSVClassifier, InertiaClassifier, YoloV5
+from inference import Converter, HSVClassifier, InertiaClassifier, YoloV5, YoloV8
 from inference.filters import filters
 from run_utils import (
     get_ball_detections,
@@ -46,7 +46,8 @@ fps = video.video_capture.get(cv2.CAP_PROP_FPS)
 
 # Object Detectors
 player_detector = YoloV5()
-ball_detector = YoloV5(model_path=args.model)
+ball_detector = YoloV8() # TODO: update the model to be the trained version on the ROBOFLOW dataset
+# ball_detector = YoloV5(model_path=args.model)
 
 # HSV Classifier
 hsv_classifier = HSVClassifier(filters=filters)
