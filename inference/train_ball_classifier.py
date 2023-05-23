@@ -7,5 +7,14 @@ def runYoloV8():
     results = model.train(data="../datasets/soccerball/data.yaml", epochs=2, save=True, save_period=1, optimizer='AdamW')
 
 
-if __name__ == "__main__": 
-    runYoloV8()
+def detectYoloV8(): 
+    model = YOLO("runs/detect/train8/weights/best.pt")
+
+def results():
+    model = YOLO("runs/detect/train8/weights/best.pt")
+    results = model.val()
+    print(results)
+
+# if __name__ == "__main__": 
+#     # runYoloV8()
+#     results()
