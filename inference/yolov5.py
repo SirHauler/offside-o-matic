@@ -24,10 +24,10 @@ class YoloV5(BaseDetector):
         print(self.device)
 
         if model_path:
-            self.model = torch.hub.load("ultralytics/yolov5", "custom", path=model_path)
+            self.model = torch.hub.load("ultralytics/yolov5", "custom", path='inference/runs/detect/train13/weights/epoch1.pt', force_reload=True)
         else:
             self.model = torch.hub.load(
-                "ultralytics/yolov5", "yolov5x", pretrained=True
+                "ultralytics/yolov5", "yolov5x", pretrained=True, force_reload=True
             )
 
     def predict(self, input_image: List[np.ndarray]) -> pd.DataFrame:
@@ -46,5 +46,5 @@ class YoloV5(BaseDetector):
         """
 
         result = self.model(input_image, size=640)
-
+        # print("For person", result)
         return result.pandas().xyxy[0]

@@ -5,7 +5,7 @@ import numpy as np
 from norfair import Detection
 from norfair.camera_motion import MotionEstimator
 
-from inference import Converter, YoloV5
+from inference import Converter, YoloV5, YoloV8
 from soccer import Ball, Match
 
 
@@ -17,7 +17,7 @@ def get_offside_line(
     return 0
 
 def get_ball_detections(
-    ball_detector: YoloV5, frame: np.ndarray
+    ball_detector: YoloV8, frame: np.ndarray
 ) -> List[norfair.Detection]:
     """
     Uses custom Yolov5 detector in order

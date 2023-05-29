@@ -1,13 +1,13 @@
 task: detect
 mode: train
 model: yolov8n.pt
-data: datasets/soccerball/data.yaml
-epochs: 10
+data: /home/ubuntu/cs231n/offside-o-matic/datasets/soccerball/data.yaml
+epochs: 2
 patience: 50
 batch: 16
 imgsz: 640
 save: true
-save_period: -1
+save_period: 1
 cache: false
 device: null
 workers: 8
@@ -15,7 +15,7 @@ project: null
 name: null
 exist_ok: false
 pretrained: false
-optimizer: SGD
+optimizer: AdamW
 verbose: true
 seed: 0
 deterministic: true

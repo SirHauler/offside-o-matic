@@ -7,6 +7,15 @@ cenital/
 
 
 # Datasets
+datasets/
+
+# another repository
+
+yolov5/
+
+# runs & weights
+
+inference/runs/detect
 
 # Runs
 

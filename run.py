@@ -15,9 +15,11 @@ from run_utils import (
     get_player_detections,
     update_motion_estimator,
 )
+
 from soccer import Match, Player, Team
 from soccer.draw import AbsolutePath
 from soccer.pass_event import Pass
+from soccer.offside_line import OffsideLine
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -48,6 +50,7 @@ fps = video.video_capture.get(cv2.CAP_PROP_FPS)
 player_detector = YoloV5()
 ball_detector = YoloV8() # TODO: update the model to be the trained version on the ROBOFLOW dataset
 # ball_detector = YoloV5(model_path=args.model)
+# ball_detector = YoloV5()
 
 # HSV Classifier
 hsv_classifier = HSVClassifier(filters=filters)
@@ -67,6 +70,10 @@ man_city = Team(name="Man City", abbreviation="MNC", color=(240, 230, 188))
 teams = [chelsea, man_city]
 match = Match(home=chelsea, away=man_city, fps=fps)
 match.team_possession = man_city
+
+
+# Offside Line
+offside_line = OffsideLine()
 
 # Tracking
 player_tracker = Tracker(
@@ -129,6 +136,10 @@ for i, frame in enumerate(video):
 
     # Draw
     frame = PIL.Image.fromarray(frame)
+
+
+    #TODO: Draw Offside Line for testing
+
 
     if args.possession:
         frame = Player.draw_players(
