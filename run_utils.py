@@ -20,14 +20,14 @@ def get_ball_detections(
     ball_detector: YoloV8, frame: np.ndarray
 ) -> List[norfair.Detection]:
     """
-    Uses custom Yolov5 detector in order
+    Uses custom Yolov8 detector in order
     to get the predictions of the ball and converts it to
     Norfair.Detection list.
 
     Parameters
     ----------
-    ball_detector : YoloV5
-        YoloV5 detector for balls
+    ball_detector : YoloV8
+        YoloV8 detector for balls
     frame : np.ndarray
         Frame to get the ball detections from
 
@@ -37,7 +37,7 @@ def get_ball_detections(
         List of ball detections
     """
     ball_df = ball_detector.predict(frame)
-    ball_df = ball_df[ball_df["confidence"] > 0.3]
+    ball_df = ball_df[ball_df["confidence"] > 0.1]
     return Converter.DataFrame_to_Detections(ball_df)
 
 

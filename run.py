@@ -48,9 +48,8 @@ fps = video.video_capture.get(cv2.CAP_PROP_FPS)
 
 # Object Detectors
 player_detector = YoloV5()
-ball_detector = YoloV8() # TODO: update the model to be the trained version on the ROBOFLOW dataset
-# ball_detector = YoloV5(model_path=args.model)
-# ball_detector = YoloV5()
+# ball_detector = YoloV8() # TODO: update the model to be the trained version on the ROBOFLOW dataset
+ball_detector = YoloV5(model_path=args.model)
 
 # HSV Classifier
 hsv_classifier = HSVClassifier(filters=filters)
@@ -101,6 +100,8 @@ passes_background = match.get_passes_background()
 
 for i, frame in enumerate(video):
 
+    # assert i != 20
+
     # Get Detections
     players_detections = get_player_detections(player_detector, frame)
     ball_detections = get_ball_detections(ball_detector, frame)
@@ -139,6 +140,8 @@ for i, frame in enumerate(video):
 
 
     #TODO: Draw Offside Line for testing
+    offside_line.get_last_man(players)
+    frame = offside_line.draw(frame)
 
 
     if args.possession:
@@ -153,9 +156,9 @@ for i, frame in enumerate(video):
             color=match.team_possession.color,
         )
 
-        frame = match.draw_possession_counter(
-            frame, counter_background=possession_background, debug=False
-        )
+        # frame = match.draw_possession_counter(
+        #     frame, counter_background=possession_background, debug=False
+        # )
 
         if ball:
             frame = ball.draw(frame)

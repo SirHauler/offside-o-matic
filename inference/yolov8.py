@@ -17,16 +17,12 @@ class YoloV8(BaseDetector):
         print(self.device)
 
         # self.model = YOLO('yolov8n.pt')
-        self.model = YOLO('yolov8n.pt')
+        # self.model = YOLO('yolov8s.pt')
+        self.model = YOLO('football-player.pt')
 
-        # self.second_model = torch.hub.load(
-        #     "ultralytics/yolov5", "yolov5x", pretrained=True
-        # )
-        # self.model = YOLO("ball.pt")  # TODO: update this to the trained model!
-        # # torch.hub.load("ultralytics/yolov8", "custom", path="ball.pt")
-        # self.model = torch.hub.load(
-        #     "ultralytics/yolov5x", "custom", path="ball.pt"
-        # )
+        self.second_model = torch.hub.load(
+            "ultralytics/yolov5", "yolov5x", pretrained=True
+        )
 
     def predict(self, input_image: List[np.ndarray]) -> pd.DataFrame:
         # result = self.model(input_image, size=640)
@@ -51,24 +47,36 @@ class YoloV8(BaseDetector):
             N, _ = boxes.shape
             # print("Shape", boxes.xyxy.shape)
 
+            # for i in range(N):
+            # # if (int(boxes.cls[0]) == 0): 
+            #     store['name'].append("sports ball")
+            #     store['xmin'].append(float(boxes.xyxy[0][0]))
+            #     store['ymin'].append(float(boxes.xyxy[0][1]))
+            #     store['xmax'].append(float(boxes.xyxy[0][2]))
+            #     store['ymax'].append(float(boxes.xyxy[0][3]))
+            #     store['confidence'].append(float(boxes.conf[0]))
+            #     store['class'].append(int(boxes.cls[0]))
+
             for i in range(N):
+            # if (int(boxes.cls[0]) == 0): 
+                store['name'].append("sports ball")
                 store['xmin'].append(float(boxes.xyxy[i][0]))
                 store['ymin'].append(float(boxes.xyxy[i][1]))
                 store['xmax'].append(float(boxes.xyxy[i][2]))
                 store['ymax'].append(float(boxes.xyxy[i][3]))
                 store['confidence'].append(float(boxes.conf[i]))
                 store['class'].append(int(boxes.cls[i]))
-                if (int(boxes.cls[i]) == 0): 
-                    store['name'].append("person")
-                elif (int(boxes.cls[i] == 32)): 
-                    store['name'].append("sports ball")
-                else: 
-                    store['name'].append("N/A")
+                        
+                        
+                # elif (int(boxes.cls[i] == 32)): 
+                #     store['name'].append("N/A")
+                # else: 
+                #     store['name'].append("N/A")
 
-        # print(store)
+        print(store)
 
         # print(pd.DataFrame(store))
-        # print(second_results.pandas().xyxy)
+        # print(second_results.pandas().xyxy[0])
 
         return pd.DataFrame(store)
     
