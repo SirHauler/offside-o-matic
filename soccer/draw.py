@@ -121,7 +121,7 @@ class Draw:
         rectangle = [tuple(x) for x in rectangle]
         # draw.rectangle(rectangle, outline=color, width=thickness)
         draw.rounded_rectangle(rectangle, radius=7, outline=color, width=thickness)
-
+        
         return img
 
     @staticmethod

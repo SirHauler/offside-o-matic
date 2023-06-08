@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import torch
 import yolov5
+from ultralytics import YOLO
 
 from inference.base_detector import BaseDetector
 
@@ -42,8 +43,9 @@ class YoloV5(BaseDetector):
 
         else:
             self.model = torch.hub.load(
-                "ultralytics/yolov5", "yolov5x", pretrained=True, force_reload=True
+                "ultralytics/yolov5", "yolov5x", pretrained=True,
             )
+            # self.model = YOLO("inference/yolov5xu.pt")
 
     def predict(self, input_image: List[np.ndarray]) -> pd.DataFrame:
         """

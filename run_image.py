@@ -6,6 +6,7 @@ import PIL
 from norfair import Tracker, Video
 from norfair.camera_motion import MotionEstimator
 from norfair.distances import mean_euclidean
+from PIL import Image
 
 from inference import Converter, HSVClassifier, InertiaClassifier, YoloV5, YoloV8
 from inference.filters import filters
@@ -20,6 +21,11 @@ from soccer import Match, Player, Team
 from soccer.draw import AbsolutePath
 from soccer.pass_event import Pass
 from soccer.offside_line import OffsideLine
+
+'''
+Adaptation of run_video.py file for singular image instead
+of video!
+'''
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -43,13 +49,14 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-video = Video(input_path=args.video)
-fps = video.video_capture.get(cv2.CAP_PROP_FPS)
+image = cv2.imread(args.video, cv2.IMREAD_COLOR)
+
+fps = 60
 
 # Object Detectors
 player_detector = YoloV5()
 # ball_detector = YoloV8() # TODO: update the model to be the trained version on the ROBOFLOW dataset
-ball_detector = YoloV5(model_path=args.model)
+ball_detector = YoloV5()
 
 # HSV Classifier
 hsv_classifier = HSVClassifier(filters=filters)
@@ -88,6 +95,8 @@ ball_tracker = Tracker(
     initialization_delay=20,
     hit_counter_max=2000,
 )
+
+
 motion_estimator = MotionEstimator()
 coord_transformations = None
 
@@ -98,83 +107,58 @@ path = AbsolutePath()
 possession_background = match.get_possession_background()
 passes_background = match.get_passes_background()
 
-for i, frame in enumerate(video):
 
     # assert i != 20
 
     # Get Detections
-    players_detections = get_player_detections(player_detector, frame)
-    ball_detections = get_ball_detections(ball_detector, frame)
-    detections = ball_detections + players_detections
+players_detections = get_player_detections(player_detector, image)
+ball_detections = get_ball_detections(ball_detector, image)
+detections = ball_detections + players_detections
 
-    # Update trackers
-    coord_transformations = update_motion_estimator(
-        motion_estimator=motion_estimator,
-        detections=detections,
-        frame=frame,
+# Update trackers
+    
+
+# Match update
+ball = get_main_ball(ball_detections)
+players = Player.from_detections(detections=players_detections, teams=teams)
+match.update(players, ball)
+
+# Draw
+image = PIL.Image.fromarray(image)
+
+
+#TODO: Draw Offside Line for testing
+offside_line.save_players(players)
+image = offside_line.draw(image)
+
+
+if args.possession:
+    image = Player.draw_players(
+        players=players, frame=image, confidence=False, id=True
     )
 
-    player_track_objects = player_tracker.update(
-        detections=players_detections, coord_transformations=coord_transformations
+    image = path.draw(
+        img=image,
+        detection=ball.detection,
+        coord_transformations=coord_transformations,
+        color=match.team_possession.color,
     )
 
-    ball_track_objects = ball_tracker.update(
-        detections=ball_detections, coord_transformations=coord_transformations
+    if ball:
+        image = ball.draw(image)
+
+if args.passes:
+    pass_list = match.passes
+
+    image = Pass.draw_pass_list(
+        img=image, passes=pass_list, coord_transformations=coord_transformations
     )
 
-    player_detections = Converter.TrackedObjects_to_Detections(player_track_objects)
-    ball_detections = Converter.TrackedObjects_to_Detections(ball_track_objects)
-
-    player_detections = classifier.predict_from_detections(
-        detections=player_detections,
-        img=frame,
+    image = match.draw_passes_counter(
+        image, counter_background=passes_background, debug=False
     )
 
-    # Match update
-    ball = get_main_ball(ball_detections)
-    players = Player.from_detections(detections=players_detections, teams=teams)
-    match.update(players, ball)
+image = np.array(image)
 
-    # Draw
-    frame = PIL.Image.fromarray(frame)
-
-
-    #TODO: Draw Offside Line for testing
-    offside_line.get_last_man(players)
-    frame = offside_line.draw(frame)
-
-
-    if args.possession:
-        frame = Player.draw_players(
-            players=players, frame=frame, confidence=False, id=True
-        )
-
-        frame = path.draw(
-            img=frame,
-            detection=ball.detection,
-            coord_transformations=coord_transformations,
-            color=match.team_possession.color,
-        )
-
-        # frame = match.draw_possession_counter(
-        #     frame, counter_background=possession_background, debug=False
-        # )
-
-        if ball:
-            frame = ball.draw(frame)
-
-    if args.passes:
-        pass_list = match.passes
-
-        frame = Pass.draw_pass_list(
-            img=frame, passes=pass_list, coord_transformations=coord_transformations
-        )
-
-        frame = match.draw_passes_counter(
-            frame, counter_background=passes_background, debug=False
-        )
-
-    frame = np.array(frame)
-
-    # Write video
-    video.write(frame)
+# Write video
+cv2.imwrite('result.jpg', image)

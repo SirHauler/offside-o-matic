@@ -10,11 +10,6 @@ from soccer import Ball, Match
 
 
 
-def get_offside_line(
-        
-): 
-    # TODO: create the offside line based on the last player from the defending team
-    return 0
 
 def get_ball_detections(
     ball_detector: YoloV8, frame: np.ndarray

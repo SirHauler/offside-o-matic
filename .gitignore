@@ -5,6 +5,8 @@ __pycache__/
 
 cenital/
 
+# Images
+Offside_Images/
 
 # Datasets
 datasets/
