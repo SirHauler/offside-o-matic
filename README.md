@@ -1,6 +1,8 @@
-# Automatic Offside Detection (Offside-O-Matic)
+# Offside-O-Matic
 
-This project provides a model for automatic offside detection using one centrally located camera. 
+This project provides a model for automatically drawing accurate offside-lines that can assist a referee in making an offside decision. This project aims to help smaller leagues that do not have the infastructure to implement
+a more sophisticated system like the one FIFA used in the 2022 World Cup in Qatar.
+
 
 ## How to install
 
